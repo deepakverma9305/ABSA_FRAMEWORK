@@ -9,9 +9,12 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -46,11 +49,21 @@ public class Functions {
 	public static String Footer = "ABSA BANK";
 	public static DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 	public static Date date = new Date();
+	public static String strDate= formatter.format(date);  
 	public static String TemlatePath= "C:\\Users\\abdv220\\Deepak_ABSA_Autamation_Framework\\Test_data\\Template\\TestResultTemplate.docx";
 	public static String TesDocPath= "C:\\Users\\abdv220\\Deepak_ABSA_Autamation_Framework\\Test_Results\\";
 	public static String ImgLocation= "C:\\Users\\abdv220\\Deepak_ABSA_Autamation_Framework\\Test_Results\\temp\\";
+	public static int[] RecNo= new int[100];
+	public static String[] FileName= new String[100];
+	public static String RaoSourceLocation= "C:\\Users\\abdv220\\Deepak_ABSA_Autamation_Framework\\Test_data\\RAO_Files\\";
+	public static String RaoDestionationLocation="\\\\22.149.62.84\\pr\\SITIN\\";
 	
-    
+	
+	
+	
+	
+	
+	
 public static void DeleteDBWF()
 
 {
@@ -61,7 +74,7 @@ public static void DeleteDBWF()
     	connection = DriverManager.getConnection("jdbc:postgresql://22.149.62.84:5432/SIT_supplierfinance_workflow","postgres", "postgres");
    
         Statement stmt = connection.createStatement();    
-        stmt.executeUpdate("truncate act_hi_procinst,act_ru_task,act_hi_actinst,act_hi_taskinst,act_ru_job cascade;");
+        stmt.executeUpdate("truncate act_ru_execution,act_hi_procinst,act_ru_task,act_hi_actinst,act_hi_taskinst,act_ru_job cascade;");
         connection.close();
         
         
@@ -284,7 +297,6 @@ public static void CreateFile_SRF(String path) throws FileNotFoundException
 
 
 }
-
 
 public static void CreateFile_SF(String path) throws FileNotFoundException
 
@@ -616,10 +628,6 @@ public static void WriteToExcel(int SheetNumber, int RowNumber, int ColNumber, S
     }
 }
 
-
-
-
-
 public static void leftClick() throws AWTException
 {
   Robot robot = new Robot();
@@ -653,7 +661,6 @@ public static void Strtype(String s) throws AWTException
   }
 }
 
-
 public static void ATtype() throws AWTException
 {
   Robot robot = new Robot();
@@ -683,6 +690,60 @@ public static void UPStrtype(String s) throws AWTException
   }
 }
 
+public static int GetTradeLoanCountAndRefNum()
+
+
+{
+	int i =1;
+	
+	try {
+		
+		
+		
+		int numberRow = 0;
+		int numberRow1 = 0;
+    	Class.forName("org.postgresql.Driver");
+    	Connection connection = null;
+    	//connection = DriverManager.getConnection(Str);
+    	connection = DriverManager.getConnection("jdbc:postgresql://22.149.62.84:5432/SIT2_supplierfinance","postgres", "postgres");
+    	
+        Statement stmt = connection.createStatement();
+      
+        
+       ResultSet rs =   stmt.executeQuery("SELECT Count(*) FROM public.trade_loan;");
+        
+        while(rs.next()){
+            numberRow = rs.getInt("Count");
+            
+        }
+        
+       // System.out.println(numberRow);
+        
+        
+        ResultSet rs1 =   stmt.executeQuery("SELECT * from public.trade_loan;");
+        
+        while(rs1.next()){
+            numberRow1 = rs1.getInt("id");
+            RecNo[i]=numberRow1;
+            i=i+1;
+            
+        }
+        
+       // System.out.println(RecNo[2]);
+       
+        
+        connection.close();
+       
+        
+        
+        
+    } catch (Exception e){e.printStackTrace();}
+	return i-1;
+	
+	
+	
+
+
 
 
 
@@ -690,9 +751,322 @@ public static void UPStrtype(String s) throws AWTException
 
 }
 
+public static String  GetLoanAmount(int m) throws ClassNotFoundException
+
+
+{
+	
+	String  LA= null;
+	
+	try {
+		
+		Class.forName("org.postgresql.Driver");
+    	Connection connection = null;
+    	//connection = DriverManager.getConnection(Str);
+    	connection = DriverManager.getConnection("jdbc:postgresql://22.149.62.84:5432/SIT2_supplierfinance","postgres", "postgres");
+    	
+        Statement stmt = connection.createStatement();
+       // int i = generalFunctions.Functions.GetTradeLoanRefNum();
+	     
+	     //int TradeLoanRefNo= generalFunctions.Functions.RecNo[i-2];     
+        
+        ResultSet rs = stmt.executeQuery("SELECT * FROM public.trade_loan where id= "+m+";");      
+       
+        while(rs.next()){
+        	
+        	
+        	String  numberRow1 = rs.getString("discount_amount");
+    	       	   
+        	//float  numberRow1 = rs.getInt("discount_amount");
+            LA=numberRow1;
+           
+           //System.out.println(LA);
+        }
+      
+        connection.close();       
+        
+    } catch (Exception e){e.printStackTrace();}
+	
+	return LA ;
+	
+	
+	
+	
+
+	
+}
+
+public static String GetBuyer(int m)
+
+{
+
+	String  numberRow1 = null;
+	String numberRow2 = null;
+
+
+try {
+	
+	
+	
+	Class.forName("org.postgresql.Driver");
+	Connection connection = null;
+	//connection = DriverManager.getConnection(Str);
+	connection = DriverManager.getConnection("jdbc:postgresql://22.149.62.84:5432/SIT2_supplierfinance","postgres", "postgres");
+	
+    Statement stmt = connection.createStatement();
+    //int i = generalFunctions.Functions.GetTradeLoanRefNum();
+     
+     //int TradeLoanRefNo= generalFunctions.Functions.RecNo[i];     
+    
+    ResultSet rs = stmt.executeQuery("SELECT * FROM public.trade_loan where id= "+m+";");      
+   
+    while(rs.next()){
+    	
+    	
+    	numberRow1 = rs.getString("buyer_id");
+	       	   
+    	//float  numberRow1 = rs.getInt("discount_amount");
+        String LA=numberRow1;
+       
+       System.out.println(LA);
+    }
+  
+    
+    ResultSet rs1 = stmt.executeQuery("SELECT * FROM public.trading_entity where id= "+numberRow1+";");      
+       
+    while(rs1.next()){
+    	
+    	
+    	numberRow2 = rs1.getString("trading_entity_name");
+	       	   
+    	//float  numberRow1 = rs.getInt("discount_amount");
+        String LA=numberRow2;
+       
+       System.out.println(LA);
+    }
+    connection.close();       
+    
+} catch (Exception e){e.printStackTrace();}
+return numberRow2;
 
 
 
 
+}
+
+public static String  GetMaturityDate(int m) throws ClassNotFoundException
+
+
+{
+	
+	String  LA= null;
+	
+	try {
+		
+		Class.forName("org.postgresql.Driver");
+    	Connection connection = null;
+    	//connection = DriverManager.getConnection(Str);
+    	connection = DriverManager.getConnection("jdbc:postgresql://22.149.62.84:5432/SIT2_supplierfinance","postgres", "postgres");
+    	
+        Statement stmt = connection.createStatement();
+       // int i = generalFunctions.Functions.GetTradeLoanRefNum();
+	     
+	     //int TradeLoanRefNo= generalFunctions.Functions.RecNo[i-2];     
+        
+        ResultSet rs = stmt.executeQuery("SELECT * FROM public.trade_loan where id= "+m+";");      
+       
+        while(rs.next()){
+        	
+        	
+        	String  numberRow1 = rs.getString("maturity_date");
+    	       	   
+        	//float  numberRow1 = rs.getInt("discount_amount");
+            LA=numberRow1;
+           
+           //System.out.println(LA);
+        }
+      
+        connection.close();       
+        
+    } catch (Exception e){e.printStackTrace();}
+	
+	return LA ;
+	
+	
+	
+	
+
+	
+}
+
+public static String  GetProduct(int m) throws ClassNotFoundException
+
+
+{
+	
+	String  LA= null;
+	
+	try {
+		
+		Class.forName("org.postgresql.Driver");
+    	Connection connection = null;
+    	//connection = DriverManager.getConnection(Str);
+    	connection = DriverManager.getConnection("jdbc:postgresql://22.149.62.84:5432/SIT2_supplierfinance","postgres", "postgres");
+    	
+        Statement stmt = connection.createStatement();
+       // int i = generalFunctions.Functions.GetTradeLoanRefNum();
+	     
+	     //int TradeLoanRefNo= generalFunctions.Functions.RecNo[i-2];     
+        
+        ResultSet rs = stmt.executeQuery("SELECT * FROM public.trade_loan where id= "+m+";");      
+       
+        while(rs.next()){
+        	
+        	
+        	String  numberRow1 = rs.getString("product_code");
+    	       	   
+        	//float  numberRow1 = rs.getInt("discount_amount");
+            LA=numberRow1;
+           
+           //System.out.println(LA);
+        }
+      
+        connection.close();       
+        
+    } catch (Exception e){e.printStackTrace();}
+	
+	return LA ;
+	
+	
+	
+	
+
+	
+}
+
+public static String  GetCurrency(int m) throws ClassNotFoundException
+
+
+{
+	
+	String  LA= null;
+	
+	try {
+		
+		Class.forName("org.postgresql.Driver");
+    	Connection connection = null;
+    	//connection = DriverManager.getConnection(Str);
+    	connection = DriverManager.getConnection("jdbc:postgresql://22.149.62.84:5432/SIT2_supplierfinance","postgres", "postgres");
+    	
+        Statement stmt = connection.createStatement();
+       // int i = generalFunctions.Functions.GetTradeLoanRefNum();
+	     
+	     //int TradeLoanRefNo= generalFunctions.Functions.RecNo[i-2];     
+        
+        ResultSet rs = stmt.executeQuery("SELECT * FROM public.trade_loan where id= "+m+";");      
+       
+        while(rs.next()){
+        	
+        	
+        	String  numberRow1 = rs.getString("currency");
+    	       	   
+        	//float  numberRow1 = rs.getInt("discount_amount");
+            LA=numberRow1;
+           
+           //System.out.println(LA);
+        }
+      
+        connection.close();       
+        
+    } catch (Exception e){e.printStackTrace();}
+	
+	return LA ;
+	
+	
+	
+	
+
+	
+}
+
+public static int  GetRAOFiles()
+
+
+{
+
+	File folder = new File(RaoSourceLocation);
+	File[] listOfFiles = folder.listFiles();
+
+	    for (int i = 0; i < listOfFiles.length; i++) {
+	      if (listOfFiles[i].isFile()) {
+	        //System.out.println("File " + listOfFiles[i].getName());
+	        FileName[i]=listOfFiles[i].getName();
+	      
+	      
+	      } else if (listOfFiles[i].isDirectory()) {
+	        System.out.println("Directory " + listOfFiles[i].getName());
+	      }
+	    }
+		return listOfFiles.length;
+	
+
+}
+
+public static void PutRAOFilesInserver() throws IOException
+
+
+
+{
+	
+	
+	int s= generalFunctions.Functions.GetRAOFiles();
+	
+    for (int i = 0; i < s; i++)
+    
+    
+    {
+    	
+    	String filename= generalFunctions.Functions.FileName[i];
+    	
+    	generalFunctions.Functions.copyRAOFileUsingStream(filename);
+    	generalFunctions.Functions.Wait(5000);
+    	
+
+
+    }
+
+
+}
+
+public static void copyRAOFileUsingStream(String FileName) throws IOException 
+
+
+
+{
+	
+	File source1 = new File(RaoSourceLocation+FileName);
+	File dest1 = new File(RaoDestionationLocation+FileName);
+	
+    InputStream is = null;
+    OutputStream os = null;
+    try {
+        is = new FileInputStream(source1);
+        os = new FileOutputStream(dest1);
+        byte[] buffer = new byte[1024];
+        int length;
+        while ((length = is.read(buffer)) > 0) {
+            os.write(buffer, 0, length);
+        }
+    } finally {
+        is.close();
+        os.close();
+    }
+}
+
+
+
+
+
+}
 
 
