@@ -71,7 +71,7 @@ public class GUI {
 		 {
 			 
 			 list.add("Login Test", 0);
-			 list.add("SRF_CreateTradeLoant", 1);
+			 list.add("ConfrimTradeLoans", 1);
 			 
 			 
 		 }
@@ -190,13 +190,12 @@ public class GUI {
 						}
 						
 						
-						if(TestName.equals("SRF_CreateTradeLoant"))
+						if(TestName.equals("ConfrimTradeLoans"))
 						{
 							
 							
-							generalFunctions.Functions.CleanDB();
-							generalFunctions.Functions.DeleteDBWF();
-							testCases.SRF_CreateTradeLoan.SRFCreateTradeLoan();
+							
+							testCases.ConfrimTradeLoans.ConfrimTradeLoan("ConfrimTradeLoans");
 							
 							
 						}

@@ -1,9 +1,6 @@
 package testCases;
 
-import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class TestQuery {
 	
@@ -21,8 +18,6 @@ public class TestQuery {
 	    
 	    
 	    {
-	    	   	
-	    	
 	    	String filename= generalFunctions.Functions.FileName[i];
 	    	
 	    	generalFunctions.Functions.copyRAOFileUsingStream(filename);
@@ -31,12 +26,7 @@ public class TestQuery {
 
 
 	    }
-	
-
-
-
-
-	}}
+}}
 
    
 	

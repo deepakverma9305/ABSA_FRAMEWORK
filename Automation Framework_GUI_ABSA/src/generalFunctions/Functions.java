@@ -59,11 +59,6 @@ public class Functions {
 	public static String RaoDestionationLocation="\\\\22.149.62.84\\pr\\SITIN\\";
 	
 	
-	
-	
-	
-	
-	
 public static void DeleteDBWF()
 
 {
@@ -76,9 +71,6 @@ public static void DeleteDBWF()
         Statement stmt = connection.createStatement();    
         stmt.executeUpdate("truncate act_ru_execution,act_hi_procinst,act_ru_task,act_hi_actinst,act_hi_taskinst,act_ru_job cascade;");
         connection.close();
-        
-        
-        
         
     } catch (Exception e){e.printStackTrace();}}
 
